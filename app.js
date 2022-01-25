@@ -20,7 +20,7 @@ const openingQuestions = () => {
                 type: 'list',
                 name: 'opList',
                 message: 'What would you like to do?',
-                choices: ['View All Employees', 'Add Employees', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department']
+                choices: ['View All Employees', 'Add Employees', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Exit']
             })
             .then((answer) => {
             switch (answer.opList) {
@@ -45,8 +45,10 @@ const openingQuestions = () => {
               case 'Add Department':
                 addDepartments();
                 break;
-              default:
-                console.log(`Sorry, there was a problem.`);
+              case 'Exit':
+                  myDb.end();
+                  console.log('Farewell')
+                  break;
             }
             
         })
