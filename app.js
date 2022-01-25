@@ -21,38 +21,38 @@ const openingQuestions = () => {
                 name: 'opList',
                 message: 'What would you like to do?',
                 choices: ['View All Employees', 'Add Employees', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department']
-            },
-        ).then((answer) => {
+            })
+            .then((answer) => {
             switch (answer.opList) {
               case 'View All Employees':
                 viewEmployees();
                 break;
               case 'Add Employees':
-                  console.log('aasdf')
+                addEmployees();
                 break;
               case 'Update Employee Role':
-                console.log('Mangoes and papayas are $2.79 a pound.');
+                updateRole();
                 break;
               case 'View All Roles':
                   viewRoles();
                 break;
-              case 'Add Roles':
-                  console.log('asf')
+              case 'Add Role':
+                addRoles();
                 break;
               case 'View All Departments':
                 viewDepartments();
                 break;
               case 'Add Department':
-                  console.log('asdf')
+                addDepartments();
                 break;
               default:
-                console.log(`Sorry, we are out of ${choice}.`);
+                console.log(`Sorry, there was a problem.`);
             }
             
         })
     }
 
-
+//Functions for viewing:
 const viewEmployees = () => {
     myDb.query(`SELECT * FROM employee`, (err, result) => {
       if (err) {
@@ -82,6 +82,57 @@ const viewDepartments = () => {
             openingQuestions();
     });
 };
+
+
+//Functions for adding:
+const addDepartments = () => {
+    inquirer
+        .prompt(
+            {
+                type: 'input',
+                name: 'department',
+                message: 'What is the name of the new department?'
+            })
+            .then((answer) => {
+                let name = JSON.stringify(answer.department);
+                console.log(`Added ${name} to the database!`)
+            }
+        )};
+
+const addRoles = () => {
+    inquirer
+        .prompt(
+            {
+                type: 'input',
+                name: 'role',
+                message: 'What is the name of the new role?'
+            })
+            .then((answer) => {
+                let name = JSON.stringify(answer.role);
+                console.log(`Added ${name} to the database!`)
+            }
+        )};
+
+
+const addEmployees = () => {
+    inquirer
+        .prompt(
+            {
+                type: 'input',
+                name: 'employee',
+                message: 'What is the name of the new employee?'
+            })
+            .then((answer) => {
+                let name = JSON.stringify(answer.employee);
+                console.log(`Added ${name} to the database!`)
+            }
+        )};
+
+
+//Function for updating employee role:
+const updateRole = () => {
+
+}
         
     
 
