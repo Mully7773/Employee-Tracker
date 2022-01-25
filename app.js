@@ -3,15 +3,15 @@ const inquirer = require('inquirer');
 const cTable = require ('console.table');
 
 
-// const myDb = mysql.createConnection(
-//     {
-//         host: 'localhost',
-//         user: 'root',
-//         password: 'rootroot',
-//         database: 'employeeManagement_db'
-//     },
-//     console.log(`Successfully connected to the employeeManagement_db database.`)
-// );
+const myDb = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: 'rootroot',
+        database: 'employeeManagement_db'
+    },
+    console.log(`Successfully connected to the employeeManagement_db database.`)
+);
 
 const openingQuestions = () => {
     inquirer
@@ -25,7 +25,7 @@ const openingQuestions = () => {
         ).then((answer) => {
             switch (answer.opList) {
               case 'View All Employees':
-                console.log('Oranges are $0.59 a pound.');
+                viewEmployees();
                 break;
               case 'Add Employees':
                   console.log('aasdf')
@@ -34,13 +34,13 @@ const openingQuestions = () => {
                 console.log('Mangoes and papayas are $2.79 a pound.');
                 break;
               case 'View All Roles':
-                  console.log('asdfa')
+                  viewRoles();
                 break;
               case 'Add Roles':
                   console.log('asf')
                 break;
               case 'View All Departments':
-                  console.log('afad')
+                viewDepartments();
                 break;
               case 'Add Department':
                   console.log('asdf')
@@ -51,6 +51,37 @@ const openingQuestions = () => {
             
         })
     }
+
+
+const viewEmployees = () => {
+    myDb.query(`SELECT * FROM employee`, (err, result) => {
+      if (err) {
+        console.log(err);
+      }  
+        console.table(result);
+        openingQuestions();
+    });
+};
+
+const viewRoles = () => {
+    myDb.query(`SELECT * FROM role`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+            console.table(result);
+            openingQuestions();
+    });
+};
+
+const viewDepartments = () => {
+    myDb.query(`SELECT * FROM department`, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+            console.table(result);
+            openingQuestions();
+    });
+};
         
     
 
