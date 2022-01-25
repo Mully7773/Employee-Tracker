@@ -96,8 +96,13 @@ const addDepartments = () => {
                 message: 'What is the name of the new department?'
             })
             .then((answer) => {
-                let name = JSON.stringify(answer.department);
-                console.log(`Added ${name} to the database!`)
+                myDb.query(`INSERT INTO department(name) VALUES (?);`, answer.department, (err, result) => {
+                    if (err) throw err;
+                    console.log(`Added ${answer.department} to the database!`)
+                    viewDepartments();
+                })
+                // let name = JSON.stringify(answer.department);
+                // console.log(`Added ${name} to the database!`)
             }
         )};
 
