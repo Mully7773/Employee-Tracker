@@ -156,6 +156,15 @@ const addRoles = () => {
     
 
 const addEmployees = () => {
+    myDb.query(`SELECT title FROM role`, (err, result) => {
+        if (err) throw err;
+        result = result.map((roles) => {
+            return {
+                name: roles.title,
+                // value: roles.id,
+            };
+        });
+
     inquirer
         .prompt([
             {
@@ -168,13 +177,35 @@ const addEmployees = () => {
                 name: 'last',
                 message: `What is the employee's last name?`
             },
+            {
+                type: 'list',
+                name: 'role',
+                message: `What is the employee's role?`,
+                choices: result
+            },
+            {
+                type: 'list',
+                name: 'manager',
+                message: `Who is the employee's manager?`,
+                choices:["None", "John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd"]
+            },
         ])
-            .then((answer) => {
-                let name = JSON.stringify(answer.employee);
-                console.log(`Added ${name} to the database!`)
-            }
-        )};
-
+            .then((answer) => {myDb.query(`INSERT INTO employee SET ?`, 
+            {first_name: answer.first,
+             last_name: answer.last,
+             role_id: answer.role,
+             manager_id: answer.manager
+            }, 
+            (err, result) => {
+                if (err) throw err; }
+            );
+            console.log(`Added ${answer.first} ${answer.last} to the database!`)
+            viewEmployees();
+            })
+            
+            
+        });
+};
 
 //Function for updating employee role:
 const updateRole = () => {
