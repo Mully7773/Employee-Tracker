@@ -107,28 +107,68 @@ const addDepartments = () => {
         )};
 
 const addRoles = () => {
+    myDb.query(`SELECT * FROM department`, (err, result) => {
+        if (err) throw err;
+        result = result.map((department) => {
+            return {
+                name: department.name,
+                value: department.id,
+            };
+        });
+    
     inquirer
-        .prompt(
+        .prompt([
             {
                 type: 'input',
                 name: 'role',
                 message: 'What is the name of the new role?'
-            })
-            .then((answer) => {
-                let name = JSON.stringify(answer.role);
-                console.log(`Added ${name} to the database!`)
+            },
+            {
+                type: 'input',
+                name: 'salary',
+                message: 'What is the salary of the role?'
+            },
+        
+            {
+                type: 'list',
+                name: 'departmentRole',
+                message: 'Which department does the role belong to?',
+                choices: result
             }
-        )};
-
+        ])
+            .then((answer) => {  //cannot get (? ? ?) to work...
+                myDb.query(`INSERT INTO role SET ?`, 
+                {title: answer.role,
+                 salary: answer.salary,
+                 department_id: answer.departmentRole,
+                }, 
+                (err, result) => {
+                    if (err) throw err; }
+                );
+                    console.log(`Added ${answer.role} to the database!`)
+                    viewRoles();
+            })
+            
+            
+        });
+};
+        
+    
 
 const addEmployees = () => {
     inquirer
-        .prompt(
+        .prompt([
             {
                 type: 'input',
-                name: 'employee',
-                message: 'What is the name of the new employee?'
-            })
+                name: 'first',
+                message: `What is the employee's first name?`
+            },
+            {
+                type: 'input',
+                name: 'last',
+                message: `What is the employee's last name?`
+            },
+        ])
             .then((answer) => {
                 let name = JSON.stringify(answer.employee);
                 console.log(`Added ${name} to the database!`)
