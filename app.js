@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require ('console.table');
+const { restoreDefaultPrompts } = require('inquirer');
 
 
 const myDb = mysql.createConnection(
@@ -156,14 +157,24 @@ const addRoles = () => {
     
 
 const addEmployees = () => {
-    myDb.query(`SELECT title FROM role`, (err, result) => {
+    myDb.query(`SELECT * FROM role`, (err, result) => {
         if (err) throw err;
         result = result.map((roles) => {
             return {
                 name: roles.title,
-                // value: roles.id,
+                value: roles.id,
             };
         });
+
+        myDb.query(`SELECT first_name, last_name, manager_id FROM employee`, (err, resultm) => {
+            if (err) throw err;
+            resultm = resultm.map((managers) => {
+                return {
+                    name: managers.first_name,
+                    lastName: managers.last_name,
+                    value: managers.manager_id,
+                };
+            });
 
     inquirer
         .prompt([
@@ -187,7 +198,8 @@ const addEmployees = () => {
                 type: 'list',
                 name: 'manager',
                 message: `Who is the employee's manager?`,
-                choices:["None", "John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd"]
+                choices: resultm
+                // ["None", "John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd"]
             },
         ])
             .then((answer) => {myDb.query(`INSERT INTO employee SET ?`, 
@@ -202,9 +214,15 @@ const addEmployees = () => {
             console.log(`Added ${answer.first} ${answer.last} to the database!`)
             viewEmployees();
             })
+          
             
-            
+
+        })
+
+
+
         });
+    
 };
 
 //Function for updating employee role:
