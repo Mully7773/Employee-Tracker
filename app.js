@@ -227,12 +227,56 @@ const addEmployees = () => {
 
 //Function for updating employee role:
 const updateRole = () => {
-
-}
-        
+myDb.query(`SELECT * FROM employee`, (err, resultu) => {
+    if (err) throw err;
+    resultu = resultu.map((employee) => {
+        return {
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id,
+        };
+    });
+    myDb.query(`SELECT * FROM role`, (err, result) => {
+        if (err) throw err;
+        result = result.map((role) => {
+            return {
+                name: role.title,
+                value: role.id,
+            }
+        });
     
-
-
-
-
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'employeeSelect',
+                message: `Which employee's role do you want to update?`,
+                choices: resultu,
+            },
+            {
+                type: 'list',
+                name: 'roleSelect',
+                message: `Which role do you want to assign the selected employee?`,
+                choices: result,
+            },
+        ])
+        .then ((answers) => {
+            myDb.query(`UPDATE employee SET ? WHERE ?`,
+            [
+                {
+                    role_id: answers.roleSelect,
+                },
+                {
+                    id: answers.employeeSelect,
+                },
+            ],
+            function (err) {
+                if (err) throw err;
+            }
+            );
+            console.log(`Updated employee's role!`)
+            viewEmployees();
+        });
+    });
+});
+};
 openingQuestions();
