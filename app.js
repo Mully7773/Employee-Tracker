@@ -57,7 +57,7 @@ const openingQuestions = () => {
 
 //Functions for viewing:
 const viewEmployees = () => {
-    myDb.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id JOIN employee manager ON employee.manager_id = manager.id`, (err, result) => {
+    myDb.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`, (err, result) => {
       if (err) {
         console.log(err);
       }  
@@ -180,13 +180,14 @@ const addEmployees = () => {
 
         myDb.query(`SELECT first_name, last_name, manager_id FROM employee`, (err, resultm) => {
             if (err) throw err;
-            resultm = resultm.map((managers) => {
-                return {
-                    name: managers.first_name,
-                    lastName: managers.last_name,
-                    value: managers.manager_id,
-                };
-            });
+            resultm = resultm.map(({ id, first_name, last_name}) => ({ name: first_name + " " + last_name, value: id}))
+            //  {
+            //     // return {
+            //     //     name: managers.first_name,
+            //     //     lastName: managers.last_name,
+            //     //     value: managers.manager_id,
+            //     // };
+            // });
 
     inquirer
         .prompt([
@@ -291,4 +292,5 @@ myDb.query(`SELECT * FROM employee`, (err, resultu) => {
     });
 });
 };
+
 openingQuestions();
